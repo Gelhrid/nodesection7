@@ -22,8 +22,15 @@ MongoClient.connect('mongodb://127.0.0.1:27017/TodoApp', (err, db) => {
 // }, (err) => {
 //   console.log('unable to fetch todos', err);
 // });
-db.collection('Todos').find().count((b,c)=>{
-  console.log(c);
+// db.collection('Todos').find().count((b,c)=>{
+//   console.log(c);
+// });
+
+db.collection('Todos').find({liczba: {$gte:1}}).toArray().then((docs) => {
+    console.log('Todos');
+    console.log(JSON.stringify(docs, undefined, 2));
+}, (err) => {
+  console.log('unable to fetch todos', err);
 });
 
 
