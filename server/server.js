@@ -41,7 +41,12 @@ module.exports = {app};
 // var newUser = new User(()=>{
 //   email: "michal.kodz@gmail.com"
 // });
-//
+// newUser.save().then((doc) => {
+//   console.log(doc);
+// }, (e) => {
+//   console.log(e);
+// });
+
 // newUser.save().then((doc) => {
 //   console.log(` udalo sie znowu zasaveowac: ${doc}`);
 // }).catch((error) => {
