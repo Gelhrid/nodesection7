@@ -43,6 +43,8 @@ describe('POST /todos', () => {
       });
   });
 
+//ten test pocwiczyc ze by rozumiec czemu w end jest sekcja etc
+// zeby nie z pamieci a z rozumu wiedziec to
   it('should not create todo with invalid body data', (done) => {
     request(app)
       .post('/todos')
