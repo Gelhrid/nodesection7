@@ -9,7 +9,9 @@ const todos = [{
   _id: new ObjectID(),
   text: 'first testt todo'}, {
     _id: new ObjectID(),
-    text: 'second test todo'}];
+    text: 'second test todo',
+    completed: true,
+    completedAt: 123}];
 
 beforeEach((done) => {
   Todo.remove({}).then(() => {
@@ -139,3 +141,64 @@ describe('GET /todos', () => {
         .end(done);
         });
     });
+
+      describe('UPDATE PATCH /todos/:id', () => {
+        it('should update the todo', (done) => {
+          var hexId = todos[0]._id.toHexString();
+          var newTodo= {
+            text: 'xxx',
+            completed: true
+          };
+          request(app)
+          .patch(`/todos/${hexId}`)
+          .send(newTodo)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.todo._id).toBe(hexId);
+            expect(res.body.todo.text).toBe(newTodo.text);
+            expect(res.body.todo.completed).toBe(true);
+            expect(res.body.todo.completedAt).toBeA('number');
+          })
+          .end((err, res) => {
+            if(err){
+              return done(err);
+            }
+            //ta czesc srednio potrzebna bo wyzej juz sporawdezan obiekt jaki jest zwracany
+            //i wtedy sekcja z end(...) bylaby inna
+            Todo.findById(hexId).then((todo) =>{
+
+              expect(todo.text).toBe(newTodo.text);
+              expect(todo.completed).toBe(true);
+              done();
+            }).catch((e) => done(e));
+        });
+  });
+        it('should clear completedAt when todo is not completed', (done) => {
+          var hexId = todos[1]._id.toHexString();
+          var newTodo= {
+            text: 'yyy',
+            completed: false
+          };
+          request(app)
+          .patch(`/todos/${hexId}`)
+          .send(newTodo)
+          .expect(200)
+          .expect((res) => {
+              expect(res.body.todo.completed).toBe(false);
+              expect(res.body.todo._id).toBe(hexId);
+              expect(res.body.todo.text).toBe(newTodo.text);
+          })
+          .end((err, res) => {
+            if(err){
+              return done(err);
+            }
+            //ta czesc srednio potrzebna bo wyzej juz sporawdezan obiekt jaki jest zwracany
+            //i wtedy sekcja z end(...) bylaby inna
+            Todo.findById(hexId).then((todo) =>{
+              expect(todo.completedAt).toNotExist();
+              expect(todo.completed).toBe(false);
+              done();
+            }).catch((e) => done(e));
+        });
+      });
+      });
