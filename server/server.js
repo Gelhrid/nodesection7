@@ -40,7 +40,7 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
   if(!ObjectID.isValid(id)){
-    return res.status(404).send('chyba cie pojebalo zly ID');
+    return res.status(404).send('chyba cie pojebalo zly IDs');
   }
   Todo.findById(id).then((todo) => {
     if(!todo){
