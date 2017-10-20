@@ -315,7 +315,7 @@ describe('GET /todos', () => {
         .expect((res) =>{
           expect(res.header['x-auth']).toNotExist();
         })
-        .end((error, res) => {
+        .end((error) => {
           if(error){
             return done(error);
           }
@@ -327,5 +327,28 @@ describe('GET /todos', () => {
             done(e);
           });
         });
+      });
+    });
+
+    describe('DELETE /users/me/token', () => {
+      it('should remove of tokent on logut', (done) => {
+        var token = users[0].tokens[0];
+        request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .send()
+        .expect(200)
+        .end((err) => {
+          if(err){
+            return done(error);
+          }
+
+          User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toBe(0);
+          done();
+        }).catch((e) => {
+          done(e);
+        });
+      });
       });
     });
