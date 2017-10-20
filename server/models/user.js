@@ -45,12 +45,16 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
-  var token = jwt.sign({_id: user._id.toHexString(), access},'abc123').toString();
+  var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
   user.tokens.push({access, token});
 
-  return user.save().then(()=>{
+  return user.save();.then(()=>{
     return token;
   });
+  // mozna zakomentowac
+  // .then(()=>{
+  //   return token;
+  // });
 };
 
 UserSchema.statics.findByToken = function (token) {
@@ -70,6 +74,30 @@ UserSchema.statics.findByToken = function (token) {
     '_id': decoded._id,
     'tokens.token': token,
     'tokens.access': 'auth'
+  });
+};
+
+UserSchema.statics.findByCredentials = function (email, password) {
+  var User = this;
+
+  return User.findOne({email}).then((user) => {
+
+    if(!user){
+      return Promise.reject();
+    }
+
+    return new Promise ((resolve, reject) => {
+      //z teog co rozumiem jakby bcrypt wspieral samm promisty to wystarczyloby po compare() wywolac .then()
+      //i tyle a ze tutaj robimy returna to juz nawet by bylo
+      //'return bcrypt.compare(...);' bo then bylby tam chyba
+      bcrypt.compare(password, user.password, (err, res) =>{
+        if(res){
+          resolve(user);
+        } else {
+          reject();
+        }
+      });
+    });
   });
 };
 
