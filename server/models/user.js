@@ -51,10 +51,6 @@ UserSchema.methods.generateAuthToken = function () {
   return user.save().then(()=>{
     return token;
   });
-  // mozna zakomentowac
-  // .then(()=>{
-  //   return token;
-  // });
 };
 
 UserSchema.methods.removeToken = function(token) {
