@@ -297,7 +297,7 @@ describe('GET /todos', () => {
 
           User.findOne({email}).then((user) => {
             expect(user).toBeTruthy();
-            expect(user.password).not.toBe(password);
+           expect(user.password).not.toBe(password);
             done();
           }).catch((e) => { done(e);});
         });
